@@ -63,7 +63,7 @@ public class TweetService {
 
         if (tweetDtoById.getUsername().equals(username)) {
             tweetRepository.deleteById(id);
-        }
+        } else throw new RuntimeException("You are not authorized to delete this tweet");
 
     }
 
