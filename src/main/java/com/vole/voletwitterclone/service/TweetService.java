@@ -19,26 +19,19 @@ import java.util.stream.Collectors;
 @Service
 public class TweetService {
     private final TweetRepository tweetRepository;
-
-    private final List<Tag> tagList;
-
-    public TweetService(TweetRepository tweetRepository, List<Tag> tagList) {
+    public TweetService(TweetRepository tweetRepository) {
         this.tweetRepository = tweetRepository;
-        this.tagList = tagList;
     }
 
     DozerBeanMapper dozerBeanMapper = new DozerBeanMapper();
 
     public TweetDto createTweet(TweetDto tweetDto, String username) {
 
+        List<Tag> tagList = new ArrayList<>();
         tweetDto.setUsername(username);
-
         String message = tweetDto.getMessage();
-
         List<String> listOfMessage = new ArrayList<>(Arrays.stream(message.split("#")).toList());
-
         tweetDto.setMessage(listOfMessage.get(0));
-
         listOfMessage.remove(0);
 
         for (String s : listOfMessage) {

@@ -31,25 +31,23 @@ public class TweetServiceTest {
     @Spy
     private TweetService tweetService;
 
-     Tweet tweet;
-     TweetDto tweetDto;
-     Tag tag;
-
+    Tweet tweet;
+    TweetDto tweetDto;
     @Before
     public void init() {
 
-          tag = Tag.builder()
+        Tag tag = Tag.builder()
                 .tag("BlackLivesMatters")
                 .slug("blackLivesMatters")
                 .build();
 
-          List<Tag> tagList = List.of(tag);
+        List<Tag> tagList = List.of(tag);
 
 
         tweet = Tweet.builder()
                 .id("1")
                 .username("vole")
-                .message("Hello twitter")
+                .message("Hello twitter #BlackLivesMatters  #All lives with it")
                 .tags(tagList)
                 .build();
 
@@ -65,9 +63,7 @@ public class TweetServiceTest {
     @Test
     public void createTweet() {
         when(tweetRepository.save(any())).thenReturn(tweet);
-
         TweetDto tweetReturnDto = tweetService.createTweet(tweetDto, "vole");
-
         assertEquals(Optional.of("1"), Optional.ofNullable(tweetReturnDto.getId()));
 
     }
