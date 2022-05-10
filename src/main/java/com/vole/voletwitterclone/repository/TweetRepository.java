@@ -15,6 +15,4 @@ public interface TweetRepository extends MongoRepository<Tweet, String> {
 
     Page<Tweet> findByUsername(Pageable pageable, String username);
 
-//    List<Tweet> findByUserId(String userId);
-
 }
