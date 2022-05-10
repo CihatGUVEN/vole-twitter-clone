@@ -12,10 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +36,8 @@ public class TweetServiceTest {
 
     Tweet tweet;
     TweetDto tweetDto;
+
+    List<Tweet> tweetList;
 
     @Before
     public void init() {
@@ -65,6 +64,9 @@ public class TweetServiceTest {
                 .tags(tweet.getTags())
                 .build();
 
+        tweetList = new ArrayList<>();
+        tweetList.add(tweet);
+
     }
 
     @Test
@@ -87,14 +89,12 @@ public class TweetServiceTest {
         when(tweetRepository.findById("1")).thenReturn(Optional.of(tweet));
 
         TweetDto tweetReturnDto = tweetService.getTweetById("1");
-        assertEquals(Optional.of("1"), Optional.ofNullable(tweetReturnDto.getId()));
+        assertEquals(Optional.of("vole"), Optional.ofNullable(tweetReturnDto.getUsername()));
     }
 
     @Test
     public void getAllTweets() {
 
-        List<Tweet> tweetList = new ArrayList<>();
-        tweetList.add(tweet);
         Pageable paging = PageRequest.of(0, 1);
         Page<Tweet> tweetPage = new PageImpl<>(tweetList, paging, 1);
 
@@ -107,10 +107,26 @@ public class TweetServiceTest {
     @Test
     public void getAllTweets_ByUsername() {
 
+        Pageable paging = PageRequest.of(0, 1);
+        Page<Tweet> tweetPage = new PageImpl<>(tweetList, paging, 1);
+
+        when(tweetRepository.findByUsername(isA(Pageable.class), any())).thenReturn(tweetPage);
+
+        List<TweetDto> tweetDtoList = tweetService.getAllTweets(0, 1, "vole", null, "message");
+        assertEquals(Optional.of("1"), Optional.ofNullable(tweetDtoList.get(0).getId()));
+        assertEquals(Optional.of("vole"), Optional.ofNullable(tweetDtoList.get(0).getUsername()));
     }
 
     @Test
     public void getAllTweets_ByTag() {
 
+        Pageable paging = PageRequest.of(0, 1);
+        Page<Tweet> tweetPage = new PageImpl<>(tweetList, paging, 1);
+
+        when(tweetRepository.findAll(isA(Pageable.class))).thenReturn(tweetPage);
+
+        List<TweetDto> tweetDtoList = tweetService.getAllTweets(0, 1, null, "BlackLivesMatters", "message");
+        assertEquals(Optional.of("1"), Optional.ofNullable(tweetDtoList.get(0).getId()));
+        assertEquals(Optional.of("BlackLivesMatters"), Optional.ofNullable(tweetDtoList.get(0).getTags().get(0).getTag()));
     }
 }
