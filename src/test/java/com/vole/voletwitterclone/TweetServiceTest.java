@@ -5,7 +5,6 @@ import com.vole.voletwitterclone.entity.Tweet;
 import com.vole.voletwitterclone.model.Tag;
 import com.vole.voletwitterclone.repository.TweetRepository;
 import com.vole.voletwitterclone.service.TweetService;
-import org.dozer.DozerBeanMapper;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -13,19 +12,20 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.data.domain.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.isA;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-
-import org.mockito.Matchers;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TweetServiceTest {
@@ -98,9 +98,19 @@ public class TweetServiceTest {
         Pageable paging = PageRequest.of(0, 1);
         Page<Tweet> tweetPage = new PageImpl<>(tweetList, paging, 1);
 
-        when(tweetRepository.findAll(Matchers.isA(Pageable.class))).thenReturn(tweetPage);
+        when(tweetRepository.findAll(isA(Pageable.class))).thenReturn(tweetPage);
 
         List<TweetDto> tweetDtoList = tweetService.getAllTweets(0, 1, null, null, "message");
         assertEquals(Optional.of("1"), Optional.ofNullable(tweetDtoList.get(0).getId()));
+    }
+
+    @Test
+    public void getAllTweets_ByUsername() {
+
+    }
+
+    @Test
+    public void getAllTweets_ByTag() {
+
     }
 }
